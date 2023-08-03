@@ -3,7 +3,6 @@ using AspNetCoreSample.Common;
 using AspNetCoreSample.Configuration;
 using AspNetCoreSample.Filters;
 using AspNetCoreSample.Foundation.WeatherApi;
-using AspNetCoreSample.Middleware;
 using AspNetCoreSample.Options;
 using AspNetCoreSample.RouteConstraints;
 using Microsoft.AspNetCore.Builder;
@@ -25,6 +24,8 @@ public sealed class Startup
     {
         _configuration = configuration;
         _hostEnvironment = hostEnvironment;
+
+        Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(configuration).CreateLogger();
     }
 
 
@@ -76,7 +77,7 @@ public sealed class Startup
             await context.Response.WriteAsync("Swagger.\r\n");
         }));*/
         app.UseRoutePatternLogging();
-        /*app.UseSerilogRequestLogging(options =>
+        app.UseSerilogRequestLogging(options =>
         {
             options.MessageTemplate = "{RequestHost} - - [{RequestDate}] {RequestMethod} {RequestPath} {RequestScheme} {StatusCode} {ResponseSizeInBytes}.";
             options.EnrichDiagnosticContext = (context, httpContext) =>
@@ -86,7 +87,7 @@ public sealed class Startup
                 context.Set("ResponseSizeInBytes", httpContext.Response.ContentLength ?? (object)"-");
                 context.Set("RequestDate", DateTime.UtcNow);
             };
-        });*/
+        });
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
