@@ -12,7 +12,6 @@ namespace AspNetCoreSample.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-[ServiceFilter(typeof(WeatherProfileCacheFilter))]
 [ServiceFilter(typeof(ContentLengthFilter))]
 public class WeatherController : ControllerBase
 {
@@ -28,18 +27,19 @@ public class WeatherController : ControllerBase
 
     [HttpGet]
     [Route("{city:alpha:length(3,40):required}")]
+    [ServiceFilter(typeof(WeatherProfileCacheFilter))]
     public async Task<ActionResult<WeatherProfile>> GetByCityName(string city)
     {
         using (_logger.BeginScope(new Dictionary<string, object> { ["city"] = city }))
         {
-            _logger.LogInformation("Getting weather for the city {city}.");
+            _logger.LogInformation("Getting weather for the city.");
             var getWeatherProfileResult = await GetWeatherProfileAsync(city);
             if (!getWeatherProfileResult.IsSuccessful)
             {
-                _logger.LogWarning("Failed to get weather for the city {city}.");
+                _logger.LogWarning("Failed to get weather for the city.");
                 return ExceptionReason(getWeatherProfileResult.ExceptionReason);
             }
-            _logger.LogInformation("Successfully get weather for the city {city}.");
+            _logger.LogInformation("Successfully get weather for the city.");
 
             return Ok(getWeatherProfileResult.Result);
         }
@@ -51,14 +51,14 @@ public class WeatherController : ControllerBase
     {
         using (_logger.BeginScope(new Dictionary<string, object> { ["zipcode"] = zipcode }))
         {
-            _logger.LogInformation("Getting weather by US zipcode {zipcode}.");
+            _logger.LogInformation("Getting weather by US zipcode.");
             var getWeatherProfileResult = await GetWeatherProfileAsync(zipcode);
             if (!getWeatherProfileResult.IsSuccessful)
             {
-                _logger.LogWarning("Failed to get weather by US zipcode {zipcode}.");
+                _logger.LogWarning("Failed to get weather by US zipcode.");
                 return ExceptionReason(getWeatherProfileResult.ExceptionReason);
             }
-            _logger.LogInformation("Successfully get weather by US zipcode {zipcode}.");
+            _logger.LogInformation("Successfully get weather by US zipcode.");
 
             return Ok(getWeatherProfileResult.Result);   
         }
@@ -70,14 +70,14 @@ public class WeatherController : ControllerBase
     {
         using (_logger.BeginScope(new Dictionary<string, object> { ["postcode"] = postcode }))
         {
-            _logger.LogInformation("Getting weather by UK postcode {postcode}.");
+            _logger.LogInformation("Getting weather by UK postcode.");
             var getWeatherProfileResult = await GetWeatherProfileAsync(postcode);
             if (!getWeatherProfileResult.IsSuccessful)
             {
-                _logger.LogWarning("Failed to get weather by UK postcode {postcode}.");
+                _logger.LogWarning("Failed to get weather by UK postcode.");
                 return ExceptionReason(getWeatherProfileResult.ExceptionReason);
             }
-            _logger.LogInformation("Successfully get weather by UK postcode {postcode}.");   
+            _logger.LogInformation("Successfully get weather by UK postcode.");   
 
             return Ok(getWeatherProfileResult.Result);
         }
@@ -88,7 +88,7 @@ public class WeatherController : ControllerBase
     {
         using (_logger.BeginScope(new Dictionary<string, object> { ["query"] = query }))
         {
-            _logger.LogInformation("Getting weather by query {query}.");
+            _logger.LogInformation("Getting weather by query.");
             if (string.IsNullOrEmpty(query))
             {
                 const string message = "Query must be specified.";
@@ -99,10 +99,10 @@ public class WeatherController : ControllerBase
             var getWeatherProfileResult = await GetWeatherProfileAsync(query);
             if (!getWeatherProfileResult.IsSuccessful)
             {
-                _logger.LogWarning("Failed to get weather by query {query}.");
+                _logger.LogWarning("Failed to get weather by query.");
                 return ExceptionReason(getWeatherProfileResult.ExceptionReason);
             }
-            _logger.LogInformation("Successfully get weather by query {query}.");
+            _logger.LogInformation("Successfully get weather by query.");
 
             return Ok(getWeatherProfileResult.Result);   
         }
